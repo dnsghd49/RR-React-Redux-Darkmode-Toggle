@@ -9,32 +9,34 @@ export const counterSlice = createSlice({
     name: 'data',
     initialState,
     reducers: {
-        triggerThunk: (state) => {
-            return { value: state.value + 1 }
+        clearBtn: () => {
+            return initialState
         },
-        clearBtn: (state) => {
-            return { value: state.value - 1 }
+        nextBtn: (state) => {
+            return { ...state, objectId: state.objectId + 1 }
         },
-        nextBtn: (state, action) => {
-            return { value: state.value + action.payload }
+        backBtn: (state) => {
+            return { ...state, objectId: state.objectId - 1 }
         },
-        backBtn: (state, action) => {
-            return { value: state.value + action.payload }
+        setData: (state, action) => {
+            return { ...state, apiData: action.payload }
+        },
+        inputAct: (state, action) => {
+            return { ...state, objectId: action.payload }
         }
     }
-
-    // useEffect(() => {
-    //     document.title = 'Welcome to Artworld'
-    //     fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${artId}`)
-    //         .then(response => response.json())
-    //         .then(resData => setData(resData))
-    // }, [artId])
-
-    // const handleIterate = (e) => {
-    //     setArtId(artId + Number(e.target.value))
-    // }
 })
 
-export const { triggerThunk, clearBtn, nextBtn, backBtn } = counterSlice.actions
+export const { inputAct, clearBtn, nextBtn, backBtn, setData } = counterSlice.actions
+
+export const triggerThunk = () => {
+    const fetchAPI = async (dispatch, getState) => {
+        let state = getState()
+        const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${state.data.objectId}`)
+        const rData = await response.json()
+        dispatch(setData(rData))
+    }
+    return fetchAPI
+}
 
 export default counterSlice.reducer

@@ -1,11 +1,19 @@
 import './App.css';
 import { useSelector, useDispatch } from 'react-redux'
-import { triggerThunk, clearBtn, nextBtn, backBtn } from "./features/dataSlice"
+import { triggerThunk, clearBtn, nextBtn, backBtn, inputAct } from "./features/dataSlice"
 
 function App() {
   // your logic goes here!
   const dispatch = useDispatch()
-  const gallery = useSelector((state) => state.data.value)
+  const data = useSelector((state) => state.data)
+
+  const renderImg = () => {
+    if (data.apiData) {
+      return <img style={{ 'width': '100vw' }} src={data.apiData.primaryImage} alt={data.apiData.title} />
+    } else {
+      return <p>image here</p>
+    }
+  }
 
   return (
     <div className="App">
@@ -15,9 +23,10 @@ function App() {
         <button onClick={() => dispatch(nextBtn())}>Next</button>
         <button onClick={() => dispatch(backBtn())}>Back</button>
       </div>
-      <input onChange={(e) => dispatch()} />
+      <input onChange={(e) => dispatch(inputAct())} />
       <div>
-        {gallery}
+        {data.objectId}
+        {renderImg()}
       </div>
     </div>
   );
